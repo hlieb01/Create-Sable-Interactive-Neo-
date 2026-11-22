@@ -15,7 +15,7 @@ import java.nio.file.Path;
 public final class TrainSpeedConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path FILE = FMLPaths.CONFIGDIR.get().resolve("createsableinteractive.json");
-    private static volatile double maxTrainSpeedMps = -1.0;
+    private static volatile double maxTrainSpeedMps = 10.0;
 
     private TrainSpeedConfig() {}
 
@@ -24,7 +24,7 @@ public final class TrainSpeedConfig {
             Files.createDirectories(FILE.getParent());
             if (!Files.exists(FILE)) {
                 JsonObject defaults = new JsonObject();
-                defaults.addProperty("maxTrainSpeed", -1.0);
+                defaults.addProperty("maxTrainSpeed", 10.0);
                 defaults.addProperty("_comment_ccd", "Sable/Rapier CCD is enabled by default; no public speed-toggle API is available.");
                 Files.writeString(FILE, GSON.toJson(defaults));
             }
@@ -33,17 +33,17 @@ public final class TrainSpeedConfig {
                 json.addProperty("_comment_ccd", "Sable/Rapier CCD is enabled by default; no public speed-toggle API is available.");
                 Files.writeString(FILE, GSON.toJson(json));
             }
-            double configured = json.has("maxTrainSpeed") ? json.get("maxTrainSpeed").getAsDouble() : -1.0;
+            double configured = json.has("maxTrainSpeed") ? json.get("maxTrainSpeed").getAsDouble() : 10.0;
             if (!Double.isFinite(configured) || configured == 0 || configured < -1) {
                 throw new IllegalArgumentException("maxTrainSpeed must be -1 or a positive number of m/s");
             }
             maxTrainSpeedMps = configured;
         } catch (Exception exception) {
-            CreateSableInteractive.LOGGER.error("Could not read {}. Using maxTrainSpeed=-1 (unlimited).", FILE, exception);
-            maxTrainSpeedMps = -1.0;
+            CreateSableInteractive.LOGGER.error("Could not read {}. Using maxTrainSpeed=10.0 m/s.", FILE, exception);
+            maxTrainSpeedMps = 10.0;
             try {
                 JsonObject defaults = new JsonObject();
-                defaults.addProperty("maxTrainSpeed", -1.0);
+                defaults.addProperty("maxTrainSpeed", 10.0);
                 defaults.addProperty("_comment_ccd", "Sable/Rapier CCD is enabled by default; no public speed-toggle API is available.");
                 Files.writeString(FILE, GSON.toJson(defaults));
             } catch (IOException ignored) {
@@ -52,7 +52,7 @@ public final class TrainSpeedConfig {
         }
     }
 
-    /** Returns the configured limit in metres per second; -1 means unlimited. */
+    /** Returns the derailment TODO threshold in metres per second; -1 disables the high-speed detach hook. */
     public static double maxTrainSpeedMps() {
         return maxTrainSpeedMps;
     }

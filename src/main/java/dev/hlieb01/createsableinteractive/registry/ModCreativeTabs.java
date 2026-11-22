@@ -24,16 +24,7 @@ public final class ModCreativeTabs {
         () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.create_sable_interactive.main"))
             .icon(() -> new ItemStack(ModBlocks.WARNING_BARRIER_10.get()))
-            .displayItems((parameters, output) -> {
-                output.accept(ModBlocks.WARNING_BARRIER_10.get());
-                output.accept(ModBlocks.WARNING_BARRIER_20.get());
-                output.accept(ModBlocks.WARNING_BARRIER_30.get());
-                output.accept(ModBlocks.WARNING_BARRIER_50.get());
-                output.accept(ModBlocks.GIANT_BOARD.get());
-                output.accept(ModBlocks.LINK_NODE.get());
-                output.accept(ModBlocks.PHYSIC_MACHINE_ROTATOR.get());
-                output.accept(ModBlocks.SPEED_CAMERA.get());
-            })
+            .displayItems((parameters, output) -> {})
             .build());
 
     private ModCreativeTabs() {}
