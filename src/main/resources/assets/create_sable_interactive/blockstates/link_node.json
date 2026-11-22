@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "create_sable_interactive:block/link_node"
+    }
+  }
+}

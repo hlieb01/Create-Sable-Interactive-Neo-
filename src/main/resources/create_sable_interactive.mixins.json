@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "dev.hlieb01.createsableinteractive.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AbstractContraptionEntityMixin",
+    "NavigationStationMixin",
+    "TrainDerailmentTodoMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

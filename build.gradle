@@ -1,0 +1,111 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.1.38'
+}
+
+version = mod_version
+group = mod_group_id
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    flatDir { dirs 'libs' }
+    maven { url = 'https://maven.createmod.net' }
+    maven { url = 'https://maven.ithundxr.dev/snapshots' }
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://maven.ryanhcode.dev/releases" }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
+}
+
+runs {
+    configureEach {
+        systemProperty 'forge.logging.console.level', 'debug'
+        workingDirectory project.layout.projectDirectory.dir("run/${name}")
+        modSource sourceSets.main
+    }
+    client {}
+    server { argument '--nogui' }
+    gameTestServer {}
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    implementation("net.neoforged:neoforge:${neo_version}")
+
+    // Create 6.0.10 build 280 is the published 1.21.1 release-compatible artifact.
+    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
+        transitive = false
+    }
+    // Create's CreateRegistrate extends Registrate; Create is intentionally non-transitive above.
+    compileOnly("com.tterrag.registrate:Registrate:MC1.21-1.3.0+67")
+    localRuntime("com.tterrag.registrate:Registrate:MC1.21-1.3.0+67")
+
+    // Sable is a runtime mod dependency; use the Modrinth Maven for compilation and local runs.
+    compileOnly("maven.modrinth:sable:${sable_version}") { transitive = false }
+    localRuntime("maven.modrinth:sable:${sable_version}") { transitive = false }
+
+    // Sable Companion is the compatibility API intended to be bundled in dependent mods.
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${project.sable_companion_version},)")) {
+        version {
+            prefer(project.sable_companion_version)
+        }
+    }
+
+    // Bundled Sable Player Ragdolls JAR supplied for this project (see libs/).
+    jarJar(implementation("local.sable:sable_player_ragdoll:0.7.2")) {
+        version {
+            prefer("0.7.2")
+        }
+    }
+
+    // Bundled Sable: Off-Balance mod supplied for this project (see libs/).
+    jarJar(implementation("local.sable:offbalance:2.0")) {
+        version {
+            prefer("2.0")
+        }
+    }
+
+    compileOnly('org.spongepowered:mixin:0.8.5')
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+tasks.withType(ProcessResources).configureEach {
+    def replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

@@ -1,0 +1,14 @@
+{
+  "itemGroup.create_sable_interactive.main": "Create: Sable Interactive",
+  "block.create_sable_interactive.warning_barrier_10": "Warning Barrier (10 m/s)",
+  "block.create_sable_interactive.warning_barrier_20": "Warning Barrier (20 m/s)",
+  "block.create_sable_interactive.warning_barrier_30": "Warning Barrier (30 m/s)",
+  "block.create_sable_interactive.warning_barrier_50": "Warning Barrier (50 m/s)",
+  "block.create_sable_interactive.giant_board": "Giant Board",
+  "block.create_sable_interactive.link_node": "Link Node",
+  "block.create_sable_interactive.physic_machine_rotator": "Physics Machine Rotator",
+  "block.create_sable_interactive.speed_camera": "Speed Camera",
+  "key.create_sable_interactive.accelerate": "Accelerate train",
+  "key.create_sable_interactive.brake": "Brake train",
+  "key.categories.create_sable_interactive": "Create: Sable Interactive"
+}
